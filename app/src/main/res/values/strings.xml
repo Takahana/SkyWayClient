@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SkyWayClient</string>
+
+    <!-- SkyWay API Key -->
+    <string name="skyway_api_key" translatable="false"><!-- YOUR API KEY --></string>
+    <string name="skyway_domain" translatable="false"><!-- YOUR DOMAIN --></string>
 </resources>
