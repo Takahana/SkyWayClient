@@ -1,2 +1,3 @@
+include ':skyway'
 include ':app'
 rootProject.name = "SkyWayClient"
