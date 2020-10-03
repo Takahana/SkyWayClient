@@ -1,2 +1,14 @@
+plugins {
+    id "de.undercouch.download"
+}
+
+def downloadedFile = new File('./skyway', 'skyway.aar')
+if (!downloadedFile.exists()) {
+    download {
+        src 'https://github.com/skyway/skyway-android-sdk/releases/download/v2.0.3/skyway.aar'
+        dest downloadedFile
+    }
+}
+
 configurations.maybeCreate("default")
 artifacts.add("default", file('skyway.aar'))

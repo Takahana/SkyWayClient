@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.skywayclient.R
 import io.skyway.Peer.*
 import io.skyway.Peer.Browser.MediaConstraints
 import io.skyway.Peer.Browser.MediaStream
@@ -39,20 +38,20 @@ class SkyWayClient(private val activity: Activity) {
             // set Peer event callback
             peer?.run {
                 on(Peer.PeerEventEnum.CLOSE) {
-                    offer(SkyWayEvent.from(Peer.PeerEventEnum.CLOSE))
+                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.CLOSE))
                 }
                 on(Peer.PeerEventEnum.DISCONNECTED) {
-                    offer(SkyWayEvent.from(Peer.PeerEventEnum.DISCONNECTED))
+                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.DISCONNECTED))
                 }
                 on(Peer.PeerEventEnum.ERROR) {
                     val error = it as PeerError
-                    offer(SkyWayEvent.from(Peer.PeerEventEnum.ERROR))
+                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.ERROR))
                 }
 
                 // open
                 on(Peer.PeerEventEnum.OPEN) { id ->
                     ownPeerId = id.toString()
-                    offer(SkyWayEvent.from(Peer.PeerEventEnum.OPEN))
+                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.OPEN))
                 }
             }
         }
@@ -89,26 +88,26 @@ class SkyWayClient(private val activity: Activity) {
             // set Room event callback
             room?.run {
                 on(Room.RoomEventEnum.OPEN) {
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.OPEN))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.OPEN))
                 }
                 on(Room.RoomEventEnum.CLOSE) {
                     room = null
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.CLOSE))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.CLOSE))
                 }
                 on(Room.RoomEventEnum.ERROR) {
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.ERROR))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.ERROR))
                 }
                 on(Room.RoomEventEnum.PEER_JOIN) {
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.PEER_JOIN))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.PEER_JOIN))
                 }
                 on(Room.RoomEventEnum.PEER_LEAVE) {
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.PEER_LEAVE))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.PEER_LEAVE))
                 }
                 on(Room.RoomEventEnum.STREAM) {
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.STREAM))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.STREAM))
                 }
                 on(Room.RoomEventEnum.REMOVE_STREAM) {
-                    offer(SkyWayEvent.from(Room.RoomEventEnum.REMOVE_STREAM))
+                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.REMOVE_STREAM))
                 }
             }
         }
