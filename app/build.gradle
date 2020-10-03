@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 30
@@ -26,11 +27,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    
+
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+
+    ndkVersion "21.3.6528147"
 }
 
 dependencies {
@@ -46,4 +49,19 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
     implementation project(":skyway")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'tech.takahana.skywayclient'
+            artifactId = 'skywayclient'
+            version = '1.0.0'
+        }
+    }
+    repositories {
+        maven {
+            url = "file://$rootDir/pom"
+        }
+    }
 }
