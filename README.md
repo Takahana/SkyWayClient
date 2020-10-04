@@ -43,6 +43,14 @@ dependencies {
 ```
 
 ## Usage
+```strings.xml
+<resources>
+    <!-- SkyWay API Key -->
+    <string name="skyway_api_key" translatable="false"><!-- YOUR_API_KEY --></string>
+    <string name="skyway_domain" translatable="false"><!-- YOUR_DOMAIN --></string>
+</resources>
+```
+
 ```MainActivity.kt
 class MainActivity : AppCompatActivity() {
     ...
