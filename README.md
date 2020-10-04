@@ -41,3 +41,46 @@ dependencies {
     implementation project(":skyway")
 }
 ```
+
+## Usage
+```MainActivity.kt
+class MainActivity : AppCompatActivity() {
+    ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        if (!::skyWayClient.isInitialized) skyWayClient =
+            SkyWayClient(this).initialize()
+
+        start_btn.setOnClickListener {
+            startConnection()
+        }
+    }
+
+    private fun startConnection() {
+        lifecycleScope.launchWhenResumed {
+            skyWayClient.connect()
+                .catch { error ->
+                    // handle exception: ex) permission denied
+                    Log.e("_ERROR_", "${error.message}")
+                }
+                .collect {
+                    when (it) {
+                        SkyWayEvent.PeerEvent.OPEN -> joinRoom(listenOnly = true)
+                    }
+                }
+        }
+    }
+
+    private fun joinRoom(listenOnly: Boolean) {
+        lifecycleScope.launchWhenResumed {
+            skyWayClient.joinRoom(ROOM_ID, listenOnly).collect { event ->
+                if (event == SkyWayEvent.RoomEvent.OPEN) {
+                    // connection complete
+                }
+            }
+        }
+    }
+    ...
+}
+```
