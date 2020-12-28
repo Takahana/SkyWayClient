@@ -49,4 +49,5 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
     implementation project(":skywayclient")
+    implementation project(":skyway")
 }
