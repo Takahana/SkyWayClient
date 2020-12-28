@@ -40,7 +40,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = "tech.takahana.skywayclient"
                 artifactId = "skywayclient"
-                version = "1.0.4"
+                version = "1.0.5"
                 artifact sourcesJar
             }
         }
