@@ -34,8 +34,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun startConnection() {
         val option = PeerOption().apply {
-            key = getString(tech.takahana.skywayclient.R.string.skyway_api_key)
-            domain = getString(tech.takahana.skywayclient.R.string.skyway_domain)
+            key = getString(R.string.skyway_api_key)
+            domain = getString(R.string.skyway_domain)
             debug = Peer.DebugLevelEnum.ALL_LOGS
         }
         lifecycleScope.launchWhenResumed {
