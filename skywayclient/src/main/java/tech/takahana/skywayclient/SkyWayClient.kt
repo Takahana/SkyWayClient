@@ -2,6 +2,7 @@ package tech.takahana.skywayclient
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,59 +15,47 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 
-class SkyWayClient(private val activity: Activity) {
-    private val option = PeerOption().apply {
-        key = activity.getString(R.string.skyway_api_key)
-        domain = activity.getString(R.string.skyway_domain)
-        debug = Peer.DebugLevelEnum.ALL_LOGS
-    }
+class SkyWayClient {
     private var peer: Peer? = null
     private var room: Room? = null
     private var ownPeerId: String? = null
     private var localStream: MediaStream? = null
 
-    fun initialize(): SkyWayClient {
-        requestPermission()
-        return this
-    }
-
-    fun connect() = callbackFlow<SkyWayEvent.PeerEvent> {
-        if (!checkPermission()) {
+    fun connect(context: Context, peerId: String?, option: PeerOption) = callbackFlow {
+        if (!checkPermission(context)) {
             close(Exception("Permission denied."))
         } else {
-            peer = Peer(activity, option)
-            // set Peer event callback
+            peer = Peer(context, peerId, option)
             peer?.run {
                 on(Peer.PeerEventEnum.CLOSE) {
-                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.CLOSE))
+                    offer(SkyWayEvent.from(Peer.PeerEventEnum.CLOSE))
                 }
                 on(Peer.PeerEventEnum.DISCONNECTED) {
-                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.DISCONNECTED))
+                    offer(SkyWayEvent.from(Peer.PeerEventEnum.DISCONNECTED))
                 }
                 on(Peer.PeerEventEnum.ERROR) {
                     val error = it as PeerError
-                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.ERROR))
+                    offer(SkyWayEvent.from(Peer.PeerEventEnum.ERROR))
                 }
-
-                // open
                 on(Peer.PeerEventEnum.OPEN) { id ->
                     ownPeerId = id.toString()
-                    offer(SkyWayEvent.Companion.from(Peer.PeerEventEnum.OPEN))
+                    offer(SkyWayEvent.from(Peer.PeerEventEnum.OPEN))
                 }
             }
         }
-
         awaitClose {
             this@SkyWayClient.close()
         }
     }.flowOn(Dispatchers.IO)
 
-    private fun checkPermission(): Boolean {
-        return (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED)
+    private fun checkPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestPermission() {
+    fun requestPermission(activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(Manifest.permission.RECORD_AUDIO),
@@ -88,26 +77,26 @@ class SkyWayClient(private val activity: Activity) {
             // set Room event callback
             room?.run {
                 on(Room.RoomEventEnum.OPEN) {
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.OPEN))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.OPEN))
                 }
                 on(Room.RoomEventEnum.CLOSE) {
                     room = null
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.CLOSE))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.CLOSE))
                 }
                 on(Room.RoomEventEnum.ERROR) {
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.ERROR))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.ERROR))
                 }
                 on(Room.RoomEventEnum.PEER_JOIN) {
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.PEER_JOIN))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.PEER_JOIN))
                 }
                 on(Room.RoomEventEnum.PEER_LEAVE) {
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.PEER_LEAVE))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.PEER_LEAVE))
                 }
                 on(Room.RoomEventEnum.STREAM) {
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.STREAM))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.STREAM))
                 }
                 on(Room.RoomEventEnum.REMOVE_STREAM) {
-                    offer(SkyWayEvent.Companion.from(Room.RoomEventEnum.REMOVE_STREAM))
+                    offer(SkyWayEvent.from(Room.RoomEventEnum.REMOVE_STREAM))
                 }
             }
         }
